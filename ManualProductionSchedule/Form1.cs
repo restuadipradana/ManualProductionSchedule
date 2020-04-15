@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -20,8 +21,10 @@ namespace ManualProductionSchedule
             InitializeComponent();
         }
 
+
         private void UploadForm_Load(object sender, EventArgs e)
         {
+            
             try
             {
                 
@@ -33,6 +36,11 @@ namespace ManualProductionSchedule
                 }
                 string[] files = Directory.GetFiles(path, "*.xls*");
                 listBox1.Items.AddRange(files);
+                foreach (string filefilter in Directory.GetFiles(path, "*.xls*")
+                                 .Where(x => new DirectoryInfo(x).Name.StartsWith("~$")))
+                {
+                    listBox1.Items.Remove(filefilter);
+                }
             }
             catch (Exception ex)
             {
@@ -118,19 +126,19 @@ namespace ManualProductionSchedule
                             start = nt + 4;
                             for (int az = start; az < endrow; az++)
                             {
-                                string CFD, PD, CRD, DEST, CUSNO, MODNM, MODEL, ARTICLE, QTY;
+                                string IDENT, CFD, PD, CRD, DEST, CUSNO, MODNM, MODEL, ARTICLE, QTY;
                                 if (ws.Cells[az, 6].Value == null || ws.Cells[az, 26].Value == null) //, PO, TH
                                 {
                                     if (ws.Cells[az + 3, 26].Value != null)
                                     {
                                         if (ws.Cells[az + 3, 26].Value.Equals("TH") || (ws.Cells[az + 3, 26].Value.Equals("Thaønh hình")))
                                         {
-                                            awxb = az + 3;
+                                            awxb = az + 3; //handle if order null and last row per group
                                             break; //az = az + ...
                                         }
                                         else if (ws.Cells[az + 3, 26].Value.Equals("A / S"))
                                         {
-                                            awxb = az + 2;
+                                            awxb = az + 2; //handle no data per group
                                             break;
                                         }
                                         else if (az == endrow - 3)
@@ -158,6 +166,9 @@ namespace ManualProductionSchedule
                                 //    awxb = az + 2;
                                 //    break;
                                 //}
+
+                                //if (ws.Cells[az, 1].Value == null) { IDENT = " "; }
+                                //else { IDENT = ws.Cells[az, 1].Value.ToString(); }
 
                                 if (ws.Cells[az, 1].Value == null) { CFD = " "; }
                                 else { CFD = DateTime.FromOADate(long.Parse(ws.Cells[az, 1].Value.ToString())).ToString("MM/dd/yyyy"); }
@@ -221,7 +232,7 @@ namespace ManualProductionSchedule
                                 {
                                     if (ws.Cells[az + 4, 26].Value.Equals("A / S"))
                                     {
-                                        awxb = az + 3;
+                                        awxb = az + 3; //handle last row per group
                                         break; //az = az + ...
                                     }
                                 }
