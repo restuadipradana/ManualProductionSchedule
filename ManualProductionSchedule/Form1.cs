@@ -126,7 +126,7 @@ namespace ManualProductionSchedule
                             start = nt + 4;
                             for (int az = start; az < endrow; az++)
                             {
-                                string IDENT, CFD, PD, CRD, DEST, CUSNO, MODNM, MODEL, ARTICLE, QTY;
+                                string  CFD, PD, CRD, DEST, CUSNO, MODNM, MODEL, ARTICLE, QTY;
                                 if (ws.Cells[az, 6].Value == null || ws.Cells[az, 26].Value == null) //, PO, TH
                                 {
                                     if (ws.Cells[az + 3, 26].Value != null)
@@ -251,7 +251,7 @@ namespace ManualProductionSchedule
                 }
                 string loc = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
                 string floc = @loc + "\\ManualProductionSchedule";
-                tmpData.ToCSV(@loc+"\\ManualProductionSchedule.csv");
+                tmpData.ToCSV(@loc+ "\\ie383.csv");
                 MessageBox.Show("Convert Successful", "Done",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 button1.Text = "Convert to CSV";
@@ -286,6 +286,12 @@ namespace ManualProductionSchedule
             return tmpData;
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form form2 = new Form2();
+
+            form2.ShowDialog();
+        }
     }
 
     public static class CSVUtility
